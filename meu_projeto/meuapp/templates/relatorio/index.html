@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Relatório contas</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+
+</head>
+<body>
+<div class="container">
+<!-- Este é um comentário HTML -->
+{# Este é um comentário em template #}
+<h2>Relatório contas á pagar</h2>
+<br>
+
+<div>
+    <label for="contas">Tipo de Conta:</label>
+    <select id="contas" onclick="selecionar()">
+      <option value="pagar" selected>A Pagar</option>
+      <option value="receber">A Receber</option>
+      <option value="fluxo">Fluxo de Caixa</option>
+    </select>
+<hr />
+   
+  <div id="periodo">
+   <div>
+     <label>Data vencimento inicial</label>
+     <div>
+       <input type="date" name="dtInicial" id="dtInicial" value="new Date()">
+     </div>	 
+   </div>	 
+
+   <div>
+     <label>Data vencimento final</label>
+     <div>
+       <input type="date" name="dtFinal" id="dtFinal">
+     </div>	 
+   </div>	
+  </div>  
+ 
+  <div>
+    <br />
+    <button class="btn btn-success" onclick="emitir()">Gerar</button>
+  </div>
+
+  <hr />
+
+  <div id="result">
+
+  <div>
+
+</div>
+
+</div>
+
+</body>
+</html>
+
+<script>
+
+   let now = formatDate();
+
+   document.getElementById('dtInicial').value = now;
+   document.getElementById('dtFinal').value   = now;
+
+   function formatDate(dt = null){
+
+	   if(dt === null)
+	    dt = new Date();
+	   else
+	    dt = new Date(dt);	
+       
+	   return dt.toISOString().split('T')[0];
+
+   }
+
+
+   function selecionar(){
+      
+       let tipo = document.getElementById('contas').value;
+
+       if(tipo === 'fluxo')
+       {
+         let obj = document.getElementById('periodo');
+         obj.style.display = 'none'
+       }
+       else
+       {
+         let obj = document.getElementById('periodo');
+         obj.style.display = 'block'       
+       }
+       
+
+   }
+
+   function emitir(){
+	    
+    let tipo = document.getElementById('contas').value;
+
+		let dtInit = document.getElementById('dtInicial').value;
+        dtInit = formatDate(dtInit);
+
+		let dtEnd = document.getElementById('dtFinal').value;
+        dtEnd = formatDate(dtEnd);
+
+      
+     if(tipo === 'fluxo'){
+       
+     }  
+      
+       fetch(`/meuapp/rel${tipo}/${dtInit}/${dtEnd}`)
+       .then(function(response) {
+         return response.json();
+       })
+      .then(function(data) {
+         montarRelatorio(tipo,data[tipo]);
+      });
+
+		
+   }
+
+
+   function montarRelatorio(tipo,contas){
+         
+         let total = 0;
+         let table = `
+                 <div>
+                   <table class="table table-striped">
+                      <tr>
+                        <th>Descricao</th>
+                        <th>Vencimento</th>
+                        <th>Classificação</th>
+                        <th>Pagamento</th>
+                        <th>Valor</th>
+                      </tr>  
+                 ` ;
+
+         for(let i = 0; i < contas.length; i++){
+             
+             table = `${table}
+                       <tr>
+                         <td>${contas[i].descricaoConta}</td>
+                         <td>${tipo == 'pagar' ? contas[i].dataVencimento : contas[i].dataExpectativa}</td>`
+            
+              tipo == 'pagar' && contas[i].classificacaoContasAPagar && (
+                     table = `${table}             
+                         <td>
+                          ${contas[i].classificacaoContasAPagar.descricaoClassificacao}
+                         </td> 
+                       `      
+              )    
+
+              tipo == 'receber' && contas[i].classificacaoContasAReceber && (
+                     table = `${table}             
+                         <td>
+                          ${contas[i].classificacaoContasAReceber.descricaoClassificacao}
+                         </td> 
+                       `      
+              )             
+                    
+              table = `${table} 
+                         <td>${contas[i].formaPagamento ? contas[i].formaPagamento.descricaoFormaPagamentoRecebimento : ''}</td> 
+                         <td>${contas[i].valor}</td> 
+                       </tr>
+                       `  
+             total = total + contas[i].valor;          
+         } 
+
+         table = `${table} </table>`
+
+         table = `${table} <div><strong>Total: ${total}</strong></div></div>`
+      
+         document.getElementById('result').innerHTML = table;
+
+   }
+
+</script>
+ 

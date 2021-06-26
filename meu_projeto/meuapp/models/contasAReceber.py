@@ -25,7 +25,7 @@ class ContasAReceber(models.Model):
 			choices=SITUACAO_CHOICES,
 			default='PR')
 
-    classificacaoContasAPagar = models.ForeignKey(ClassificacaoContasAReceber,
+    classificacaoContasAReceber = models.ForeignKey(ClassificacaoContasAReceber,
 							on_delete=models.CASCADE,
 							null=False)
     formaPagamento = models.ForeignKey(FormaPagamentoRecebimento,

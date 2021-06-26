@@ -12,6 +12,7 @@ class ContasAPagarManager(models.Manager):
 class ContasAPagar(models.Model):
     SITUACAO_CHOICES = [('PO','Pago'),
 					('PR','A Pagar')]
+                
 
     dataVencimento = models.DateField(null=False)
 
@@ -25,12 +26,8 @@ class ContasAPagar(models.Model):
 			choices=SITUACAO_CHOICES,
 			default='PR')
 
-    classificacaoContasAPagar = models.ForeignKey(ClassificacaoContasAPagar,
-							on_delete=models.CASCADE,
-							null=False)
-    formaPagamento = models.ForeignKey(FormaPagamentoRecebimento,
-							on_delete=models.CASCADE,
-							null=True)
+    classificacaoContasAPagar = models.ForeignKey(ClassificacaoContasAPagar,on_delete=models.CASCADE,null=True)
+    formaPagamento = models.ForeignKey(FormaPagamentoRecebimento,on_delete=models.CASCADE,null=True)
 
     objects = ContasAPagarManager()
 
