@@ -13,6 +13,7 @@ urlpatterns = [
 	path('relatorio', views.relatorio, name='relatorio'),
 	path('relpagar/<str:dtInit>/<str:dtEnd>', views.relpagar, name='relpagar'),
 	path('relreceber/<str:dtInit>/<str:dtEnd>', views.relreceber, name='relreceber'),
+	path('exibir_fluxo_caixa', views.exibir_fluxo_caixa, name='exibir_fluxo_caixa'),
 	path('', include(router.urls)),
 	path('api-auth/', 
 		include('rest_framework.urls',

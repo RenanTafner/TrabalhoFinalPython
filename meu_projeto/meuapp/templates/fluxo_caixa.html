@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<title>Fluxo de caixa</title>
+</head>
+<body>
+
+
+
+    <div class="container">
+
+        <h1 style="background-color: black;">Fluxo de Caixa do Sistema</h1>
+
+        <img src="https://www.stepconsultoria.com/wp-content/uploads/2018/07/fluxo-de-caixa.png"/>
+
+        <div>
+            {% for relatorio_mes in relatorios_meses %}
+                <h1>{{relatorio_mes.data}}</h1>
+                <h4>Saldo Inicial: {{relatorio_mes.saldo_inicial}} R$</h4>      
+                
+                {% for gasto_por_classificacao in relatorio_mes.a_pagar.gastos_por_classificacao %}
+                <div class="row">
+                    <div class="col-6">
+                        <p>Despesa: {{gasto_por_classificacao.classificacao}}</p>
+                    </div>
+                    <div class="col-6">
+                        <p>{{gasto_por_classificacao.soma_total}} R$</p>
+                    </div>
+                </div>
+                {% endfor %}
+
+                <div class="row totais">
+                    <div class="col-6">
+                        <p class="total">Total de gastos previstos</p>
+                    </div>
+                    <div class="col-6">
+                        <p class="total">{{relatorio_mes.a_pagar.soma_total_prevista}} R$</p>
+                    </div>
+                </div>
+
+                <div class="row totais">
+                    <div class="col-6">
+                        <p class="total">Total de gastos pagos</p>
+                    </div>
+                    <div class="col-6">
+                        <p class="total">{{relatorio_mes.a_pagar.soma_total_realizada}} R$</p>
+                    </div>
+                </div>
+
+                <div class="row totais">
+                    <div class="col-6">
+                        <p class="total">Total de gastos</p>
+                    </div>
+                    <div class="col-6">
+                        <p class="total">{{relatorio_mes.a_pagar.soma_mensal}} R$</p>
+                    </div>
+                </div>
+
+                <br><br>
+
+                {% for ganho_por_classificacao in relatorio_mes.a_receber.ganhos_por_classificacao %}
+                <div class="row">
+                    <div class="col-6">
+                        <p>Receita: {{ganho_por_classificacao.classificacao}}</p>
+                    </div>
+                    <div class="col-6">
+                        <p>{{ganho_por_classificacao.soma_total}} R$</p>
+                    </div>
+                </div>
+                {% endfor %}
+
+                <div class="row totais">
+                    <div class="col-6">
+                        <p class="total">Total receitas previstas</p>
+                    </div>
+                    <div class="col-6">
+                        <p class="total">{{relatorio_mes.a_receber.soma_total_prevista}} R$</p>
+                    </div>
+                </div>
+
+                <div class="row totais">
+                    <div class="col-6">
+                        <p class="total">Total receitas recebidas</p>
+                    </div>
+                    <div class="col-6">
+                        <p class="total">{{relatorio_mes.a_receber.soma_total_recebida}} R$</p>
+                    </div>
+                </div>
+
+                <div class="row totais">
+                    <div class="col-6">
+                        <p class="total">Total receitas</p>
+                    </div>
+                    <div class="col-6">
+                        <p class="total">{{relatorio_mes.a_receber.soma_mensal}} R$</p>
+                    </div>
+                </div>
+
+                <h4>Saldo Final: {{relatorio_mes.saldo_final}} R$</h4>
+                <h4>Lucratividade: {{relatorio_mes.lucro_total}} R$</h4>
+
+            {% endfor %}
+
+    
+
+        </div>
+
+
+    </div>
+
+	<style>
+        img{
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            width: 400px;
+            height: 200px;
+            border: 1px solid black;
+        }
+
+        body{
+            background-color: red;
+        }
+
+        h1 {
+            font-size: 40px;
+            margin-top: 80px;
+            margin-bottom: 40px;
+            padding: 10px;
+            text-align: center;
+            background-color: blue;
+            color: white;
+        }
+
+        h4 {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            background-color: black;
+            color: white;
+            font-size: 24px;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .row {
+            padding-top: 5px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid black;
+        }
+
+        .totais {
+            padding-top: 5px;
+            padding-bottom: 5px;
+            background-color: gray;
+        }
+
+        .total {
+            font-weight: 600;
+            color: white;
+        }
+
+	</style>
+
+
+    <!--Bootstrap-->
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+</body>
+</html>

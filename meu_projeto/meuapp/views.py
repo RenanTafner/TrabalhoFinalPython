@@ -8,6 +8,8 @@ from .models.classificacaoContasAReceber import ClassificacaoContasAReceber
 from .models.contasAPagar import ContasAPagar
 from .models.contasAReceber import ContasAReceber
 from .models.formaPagamentoRecebimento import FormaPagamentoRecebimento
+from django.views.decorators.http import require_http_methods
+import datetime
 
 def relatorio(request):
 	
@@ -76,6 +78,49 @@ def relreceber(request, dtInit, dtEnd):
 	}
 
 	return JsonResponse(payload)
+
+@require_http_methods(['GET'])
+def exibir_fluxo_caixa(request):
+
+    relatorios_meses = []
+
+    for mes_x in range(1, 13):
+
+        saldo_inicial = 0 if mes_x == 1 else relatorio_mes['saldo_final']       
+
+        saldo_final = round(saldo_inicial - ContasAPagar.objects.obter_soma_total_mes(mes_x) + ContasAReceber.objects.obter_soma_total_mes(mes_x), 2)
+
+        lucro_total = round(saldo_final - saldo_inicial, 2)
+
+        relatorio_mes = {
+
+            "data" : datetime.date(1900, mes_x, 1).strftime('%B'),
+
+            "saldo_inicial" : saldo_inicial,
+
+            "a_pagar" : {
+                "soma_total_prevista": ContasAPagar.objects.obter_soma_prevista_mes(mes_x),
+                "soma_total_realizada": ContasAPagar.objects.obter_soma_realizada_mes(mes_x),
+                "soma_mensal": ContasAPagar.objects.obter_soma_total_mes(mes_x),
+                "gastos_por_classificacao": ContasAPagar.objects.obter_gastos_por_classificacao(mes_x),
+            },
+
+            "a_receber" : {
+                "soma_total_prevista": ContasAReceber.objects.obter_soma_prevista_mes(mes_x),
+                "soma_total_recebida": ContasAReceber.objects.obter_soma_realizada_mes(mes_x),
+                "soma_mensal": ContasAReceber.objects.obter_soma_total_mes(mes_x),
+                "ganhos_por_classificacao": ContasAReceber.objects.obter_gastos_por_classificacao(mes_x),
+            },
+
+            "lucro_total": lucro_total,
+
+			"saldo_final" : saldo_final,
+
+        } 
+
+        relatorios_meses.append(relatorio_mes)
+
+    return render(request, 'fluxo_caixa.html', {"relatorios_meses" : relatorios_meses})		
 
 class ClassificacaoContasAPagarViewSet(viewsets.ModelViewSet):
 	queryset = ClassificacaoContasAPagar.objects.all().order_by('descricaoClassificacao')
