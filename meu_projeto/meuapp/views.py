@@ -120,7 +120,7 @@ def exibir_fluxo_caixa(request):
 
         relatorios_meses.append(relatorio_mes)
 
-    return render(request, 'fluxo_caixa.html', {"relatorios_meses" : relatorios_meses})		
+    return render(request, 'relatorio/fluxo_caixa.html', {"relatorios_meses" : relatorios_meses})		
 
 class ClassificacaoContasAPagarViewSet(viewsets.ModelViewSet):
 	queryset = ClassificacaoContasAPagar.objects.all().order_by('descricaoClassificacao')

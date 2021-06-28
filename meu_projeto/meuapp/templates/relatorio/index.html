@@ -105,8 +105,9 @@
 
       
      if(tipo === 'fluxo'){
-       
-     }  
+        window.open('/meuapp/exibir_fluxo_caixa')
+     }
+     else {  
       
        fetch(`/meuapp/rel${tipo}/${dtInit}/${dtEnd}`)
        .then(function(response) {
@@ -116,7 +117,8 @@
          montarRelatorio(tipo,data[tipo]);
       });
 
-		
+     }
+
    }
 
 
